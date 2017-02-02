@@ -1,9 +1,9 @@
 
 <?php
-
-        $metadataUrl = '../data/' . $_GET['id'] . '/' . $_GET['id'] . '_metadata.tsv';
-        $pcaUrl = '../data/' . $_GET['id'] . '/' . $_GET['id'] . '_pca.tsv';
-        $screetableUrl = '../data/' . $_GET['id'] . '/' . $_GET['id'] . '_screetable.tsv';
+        $ds_id = $_GET['ds_id'];
+        $metadataUrl = '../data/' . $ds_id . '/' . $ds_id . '_metadata.tsv';
+        $pcaUrl = '../data/' . $ds_id . '/' . $ds_id . '_pca.tsv';
+        $screetableUrl = '../data/' . $ds_id . '/' . $ds_id . '_screetable.tsv';
         echo '<head>
               <meta charset="UTF-8">
               <link type="text/css" rel="stylesheet" href="../css/main.css">
@@ -15,10 +15,10 @@
 
         echo '
         <body>
-        <div id="ux0ib6bc39tk9t9zlg14i"></div>
+        <div id="graphDiv"></div>
         <script>(function(){
 
-        var rootDiv = document.getElementById("ux0ib6bc39tk9t9zlg14i");
+        var rootDiv = document.getElementById("graphDiv");
 
         var app = require("biojs-vis-pca");
 
@@ -73,11 +73,12 @@
             */
             groupByOptions = Object.keys(metadata[0]);
 
-
-            var itemsToBeRemoved = ["SampleID"];
+            var itemsToBeRemoved = ["SampleID", "ReadFile1", "ReadFile2"];
             for (var i = 0; i < itemsToBeRemoved.length; i++) {
               var index = groupByOptions.indexOf(itemsToBeRemoved[i]); //find index of target item in groupByOptions
-              groupByOptions.splice(index, 1);
+              if(index !== -1) {
+                groupByOptions.splice(index, 1);
+              }
             }
 
             /*In order to allow users to choose different groupByOptions,
