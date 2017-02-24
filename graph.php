@@ -23,6 +23,7 @@
         var app = require("biojs-vis-pca");
 
 
+
         //Create array which will contain all groupby options such as SampleType
         var groupByOptions = [];
 
@@ -30,8 +31,8 @@
         var groupByoption;
 
         //set default values for xDomain, yDomain
-        var xDomain = "PC1";
-        var yDomain = "PC2";
+        var xDomain = "PC1"; //xDomain is used to setup the domain for x axis and circle\'s cx attribute in scatter_plot
+        var yDomain = "PC2"; //yDomain is used to setup the domain for y axis and circle\'s cy attribute in scatter_plot
 
         //store the data for bar chart
         var barChartData;
@@ -45,11 +46,10 @@
         //number of bars that are clicked
         var numOfClickedBars = 0;
 
-
+        //store the clicked bars\' ids
         var clickedBarId = [];
 
         var body = document.getElementsByTagName("body")[0];
-
 
         //Create a form for groupby options
         var groupBySelectList = document.createElement("form");
@@ -73,12 +73,14 @@
             */
             groupByOptions = Object.keys(metadata[0]);
 
+            //We would like to remove SampleID, ReadFile1 and ReadFile2 from groupByOptions, because they won\'t be used as groupby options.
             var itemsToBeRemoved = ["SampleID", "ReadFile1", "ReadFile2"];
             for (var i = 0; i < itemsToBeRemoved.length; i++) {
               var index = groupByOptions.indexOf(itemsToBeRemoved[i]); //find index of target item in groupByOptions
-              if(index !== -1) {
+              if (index !== -1) {
                 groupByOptions.splice(index, 1);
               }
+
             }
 
             /*In order to allow users to choose different groupByOptions,
@@ -91,7 +93,7 @@
                 option.name = "color";
                 option.id = groupByOptions[i];
 
-
+                //A radio button doesn\'t come with text attribute, we need a label element for the radio button to show some text.
                 var label = document.createElement("label");
                 label.htmlFor = option.id;
                 label.innerHTML = groupByOptions[i];
@@ -158,14 +160,10 @@
         default_graph();
 
         // render the default graph, use SampleType as color domain
+
         function default_graph(){
         d3.tsv("' . $pcaUrl . '", function(error, data) {
               data.forEach(function(d) {
-                /*d.PC1 = +d.PC1;
-                d.PC2 = +d.PC2;
-                d.PC3 = +d.PC3;
-                d.PC4 = +d.PC4;
-                d.PC5 = +d.PC5;*/
                 d[xDomain] = +d[xDomain];
                 d[yDomain] = +d[yDomain];
               });
@@ -185,20 +183,22 @@
                 circle_radius: 8,
                 data: data,
                 height: 500, // height for scatter plot
-                width: 960,  //width for scatter plot
+                width: 800,  //width for scatter plot
+                legend_width: 160,
+                legend_height: 500,
                 fullWidth: 1360, //width for the whole graph
                 fullHeight: 500, //height for the whole graph
                 marginForPCA: {
                   top: 10,
-                  right: 50,
+                  right: 20,
                   bottom: 30,
                   left: 40
                 },
                 marginForBar: {
                   top: 10,
-                  right: 10,
+                  right: 20,
                   bottom: 30,
-                  left: 80
+                  left: 50
                 },
                 target: target,
                 tooltip: tooltip,
@@ -216,11 +216,14 @@
 
 
               // Get the d3js SVG element
-              var tmp = document.getElementById(rootDiv.id);
+              var tmp = document.getElementsByTagName("body")[0];
               var svgForPCA = tmp.getElementsByTagName("svg")[0];
-              var svgForBar = tmp.getElementsByTagName("svg")[1];
+              var svgForLegend = tmp.getElementsByTagName("svg")[1];
+              var svgForBar = tmp.getElementsByTagName("svg")[2];
+
               // Extract the data as SVG text string
               var svgForScatter_xml = (new XMLSerializer).serializeToString(svgForPCA);
+              var svgForLegend_xml = (new XMLSerializer).serializeToString(svgForLegend);
               var svgForBar_xml = (new XMLSerializer).serializeToString(svgForBar);
 
               //get the settings of graph

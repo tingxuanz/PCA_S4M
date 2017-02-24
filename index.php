@@ -1,5 +1,5 @@
     <?php
-      echo '<h2>Datasets</h2>';
+      echo '<h2>PCA Demos</h2>';
 
       $dir = __DIR__ . '/data/'; //get the directory that we want to scan
       $datasetNames = scandir($dir);
@@ -40,4 +40,9 @@
           }
         }
       }
+
+      echo '<h2>Hierarchical Cluster Demos</h2>';
+      echo '<a target="_blank" href="../6105.html">6105</a>';
+      echo '<br>';
+      echo '<a target="_blank" href="../6108.html">6108 compressed</a>';
     ?>
